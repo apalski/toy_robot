@@ -6,73 +6,84 @@ class Robot
     @current_position = current_position
   end
 
-  private
-
-  def self.move_robot_forward(robot)
-    table_edges(robot)
+  def act_on_instructions(move)
     case
-    when robot.current_position[2] == "NORTH"
-      robot.current_position[1] = robot.current_position[1] + 1
-    when robot.current_position[2] == "SOUTH"
-      robot.current_position[1] = robot.current_position[1] - 1
-    when robot.current_position[2] == "EAST"
-      robot.current_position[0] = robot.current_position[0] + 1
-    when robot.current_position[2] == "WEST"
-      robot.current_position[0] = robot.current_position[0] - 1
+    when move.match(/MOVE/) then move_robot_forward
+    when move.match(/PLACE\s\d\,\d\,(NORTH|SOUTH|EAST|WEST)/)
+      position_info = move.split(" ")[1]
+      position_info = position_info.split(",")
+      self.current_position = [position_info[0].to_i, position_info[1].to_i, position_info[2]]
+      instructions
+    when move.match(/REPORT/) then report_position
+    else turn_robot(move)
     end
-    ToyRobotController.instructions
   end
 
-  def self.turn_robot(direction, robot)
+  def move_robot_forward
+    self.table_edges
+    case
+    when self.current_position[2] == "NORTH"
+      self.current_position[1] = self.current_position[1] + 1
+    when self.current_position[2] == "SOUTH"
+      self.current_position[1] = self.current_position[1] - 1
+    when self.current_position[2] == "EAST"
+      self.current_position[0] = self.current_position[0] + 1
+    when self.current_position[2] == "WEST"
+      self.current_position[0] = self.current_position[0] - 1
+    end
+    GameController.instructions
+  end
+
+  def turn_robot(direction)
     if direction.match(/LEFT/)
-      turn_robot_left(robot)
+      self.turn_robot_left
     else
-      turn_robot_right(robot)
+      self.turn_robot_right
     end
   end
 
-  def self.turn_robot_left(robot)
+  def turn_robot_left
     case
-    when robot.current_position[2] == "NORTH"
-      robot.current_position[2] = "WEST"
-    when robot.current_position[2] == "SOUTH"
-      robot.current_position[2] = "EAST"
-    when robot.current_position[2] == "EAST"
-      robot.current_position[2] = "NORTH"
-    when robot.current_position[2] == "WEST"
-      robot.current_position[2] = "SOUTH"
+    when self.current_position[2] == "NORTH"
+      self.current_position[2] = "WEST"
+    when self.current_position[2] == "SOUTH"
+      self.current_position[2] = "EAST"
+    when self.current_position[2] == "EAST"
+      self.current_position[2] = "NORTH"
+    when self.current_position[2] == "WEST"
+      self.current_position[2] = "SOUTH"
     end
-    ToyRobotController.instructions
+    GameController.instructions
   end
 
-  def self.turn_robot_right(robot)
+  def turn_robot_right
     case
-    when robot.current_position[2] == "NORTH"
-      robot.current_position[2] = "EAST"
-    when robot.current_position[2] == "SOUTH"
-      robot.current_position[2] = "WEST"
-    when robot.current_position[2] == "EAST"
-      robot.current_position[2] = "SOUTH"
-    when robot.current_position[2] == "WEST"
-      robot.current_position[2] = "NORTH"
+    when self.current_position[2] == "NORTH"
+      self.current_position[2] = "EAST"
+    when self.current_position[2] == "SOUTH"
+      self.current_position[2] = "WEST"
+    when self.current_position[2] == "EAST"
+      self.current_position[2] = "SOUTH"
+    when self.current_position[2] == "WEST"
+      self.current_position[2] = "NORTH"
     end
-    ToyRobotController.instructions
+    GameController.instructions
   end
 
-  def self.report_position(robot)
-    puts "#{robot.current_position[0]},#{robot.current_position[1]},#{robot.current_position[2]}"
-    ToyRobotController.instructions
+  def report_position
+    puts "#{self.current_position[0]},#{self.current_position[1]},#{self.current_position[2]}"
+    GameController.instructions
   end
 
-  def self.table_edges(robot)
-    table_edge_north = (robot.current_position[1] == 4 && robot.current_position[2] == "NORTH")
-    table_edge_south = (robot.current_position[1] == 0 && robot.current_position[2] == "SOUTH")
-    table_edge_east = (robot.current_position[0] == 4 && robot.current_position[2] == "EAST")
-    table_edge_west = (robot.current_position[0] == 0 && robot.current_position[2] == "WEST")
+  def table_edges
+    table_edge_north = (self.current_position[1] == 4 && self.current_position[2] == "NORTH")
+    table_edge_south = (self.current_position[1] == 0 && self.current_position[2] == "SOUTH")
+    table_edge_east = (self.current_position[0] == 4 && self.current_position[2] == "EAST")
+    table_edge_west = (self.current_position[0] == 0 && self.current_position[2] == "WEST")
 
     if (table_edge_north || table_edge_south || table_edge_east || table_edge_west)
       puts "You can't move the toy robot off the table"
-      ToyRobotController.instructions
+      GameController.instructions
     end
   end
 end

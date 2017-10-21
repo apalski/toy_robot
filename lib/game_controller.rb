@@ -1,18 +1,16 @@
 require "./lib/robot"
-class ToyRobotController
-
-  private
+class GameController
 
   def self.start
     puts "Please enter 'PLACE X,Y,F' to start the game"
-    placed = gets.strip
+    placed = gets.chomp
     validate_start(placed)
   end
 
   def self.validate_start(placed)
     until placed.match(/PLACE\s[01234]\,[01234]\,(NORTH|SOUTH|EAST|WEST)/)
       puts "You must enter 'PLACE X,Y,F' to start the game"
-      placed = gets.strip
+      placed = gets.chomp
     end
     create(placed)
   end
@@ -32,20 +30,9 @@ class ToyRobotController
     puts "Enter 'REPORT' to find out where your robot is standing"
     puts "Enter 'EXIT' to leave the simulation"
     move = gets.chomp
-    act_on_instructions(move)
-  end
-
-  def self.act_on_instructions(move)
-    case
-    when move.match(/MOVE/) then Robot.move_robot_forward(@robot)
-    when move.match(/PLACE\s\d\,\d\,(NORTH|SOUTH|EAST|WEST)/)
-      position_info = move.split(" ")[1]
-      position_info = position_info.split(",")
-      @robot.current_position = [position_info[0].to_i, position_info[1].to_i, position_info[2]]
-      instructions
-    when move.match(/REPORT/) then Robot.report_position(@robot)
-    when move.match(/EXIT/) then return
-    else Robot.turn_robot(move, @robot)
+    if move == "EXIT"
+      return
     end
+    @robot.act_on_instructions(move)
   end
 end

@@ -1,4 +1,4 @@
-require "./lib/toy_robot_controller"
+require "./lib/game_controller"
 
 puts "Hi! Welcome to the Toy Robot Simulator"
 puts "The simulation takes place on a 5 square by 5 square table:"
@@ -16,11 +16,11 @@ puts "  |  0,0  |  1,0  |  2,0  |  3,0  |  4,0  |  "
 puts "  |_______|_______|_______|_______|_______|  "
 puts "                   South                     "
 puts "Each square has a position in 'X,Y' coordinates"
-puts "The robot can face 'F' either 'N' north, 'S' south, 'E' east or 'W' west"
+puts "The robot can face 'F' either 'NORTH', 'SOUTH', 'EAST' or 'WEST'"
 puts "To start the simulation you need to place the robot on the table"
-puts "by entering PLACE X,Y,F, e.g. 0,4,E"
+puts "by entering PLACE X,Y,F, e.g. 0,4,EAST"
 puts "If you try to start the game with anything else it will be ignored"
 puts "You must enter everything in capitals or it will be ignored"
 puts "You must enter valid coordinates for the table or it will be ignored"
 
-ToyRobotController.start
+GameController.start
