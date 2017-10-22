@@ -9,20 +9,19 @@ class GameController
 
   def self.validate_start(placed)
     until placed.match(/PLACE\s[01234]\,[01234]\,(NORTH|SOUTH|EAST|WEST)/)
-      puts "You must enter 'PLACE X,Y,F' to start the game"
+      puts "You must enter 'PLACE X,Y,F' with valid table positions to start the game"
       placed = gets.chomp
     end
-    create(placed)
+    create_position(placed)
   end
 
-  def self.create(placed)
-    position_info = placed.split(" ")[1]
-    position_info = position_info.split(",")
-    @robot = Robot.new([position_info[0].to_i, position_info[1].to_i, position_info[2]])
-    instructions
+  def self.create_position(placed)
+    position = placed.split(" ")[1]
+    position = position.split(",")
+    Robot.create_robot(position)
   end
 
-  def self.instructions
+  def self.instructions(robot)
     puts "What would you like your robot to do?"
     puts "Enter 'MOVE' to move your robot forward one square"
     puts "Enter 'LEFT' to turn your robot to the left by 90 degrees in place"
@@ -33,6 +32,6 @@ class GameController
     if move == "EXIT"
       return
     end
-    @robot.act_on_instructions(move)
+    robot.act_on_instructions(move)
   end
 end
